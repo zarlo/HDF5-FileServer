@@ -1,0 +1,33 @@
+<html>
+
+<head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+<h1>List:</h1>
+
+
+<div id="photos" >
+    {% for item in list %}
+
+
+    <div class="panel panel-default" style="width: 30vh; height: 35vh; float:left;" >
+          <div class="panel-heading"><a href="{{ url }}{{ item }}?i">
+        {{ item }}</a></div>
+            <div class="panel-body">
+                    <img src='/thumbnail{{ url }}{{item}}' style="width: 25vh; height: 25vh;">
+
+            </div>
+        </div>
+
+{% endfor %}
+
+</div>
+
+</body>
+
+</html>
