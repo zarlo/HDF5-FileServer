@@ -1,0 +1,7 @@
+{
+    "ui" : [{
+      "script"    : "./FrontEndServer/bin/www",
+      "instances" : "max",
+      "exec_mode" : "cluster" 
+    }]
+  }

@@ -1,11 +1,15 @@
 from __main__ import app
 import json
+import os
 
 @app.route('/api/')
-@app.route('/api/<path:data_path>')
-def api(data_path = ''):
-    return json.dumps([fh[i] for i in fh if fh[i].attrs['temperature']==20])
-
+def api():
+    db_list = []
+    for root, dirs, files in os.walk('h5data/'):
+        for filename in files:
+            db_list.append(root.split('h5data/', 1)[1] + '/' + filename)
+    print(db_list)
+    return json.dumps(db_list)
 
 
 
