@@ -29,9 +29,10 @@ router.get('/db/list', function(req, res, next) {
 });
 });
 
-router.get('/db/:data_base?.h5/:data_path?', function(req, res, next) {
+router.get('/db/:data_base?.h5*', function(req, res, next) {
+  
   request.get({
-    url: baseURL + '/api/',
+    url: baseURL + '/api/' + req.params['data_base'] + '.h5/' + req.params[0] ,
     json: true,
     headers: {'User-Agent': 'request'}
   }, (err, resboop, data) => {
@@ -41,7 +42,7 @@ router.get('/db/:data_base?.h5/:data_path?', function(req, res, next) {
       console.log('Status:', res.statusCode);
     } else {
       // data is already parsed as JSON:
-      res.render('list_db', {dbs : data});
+      res.render('list', {APIbaseURL : baseURL, db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, dbs : data});
       console.log(data);
     }
 });

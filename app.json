@@ -1,5 +1,13 @@
 {
-    "ui" : [{
+    "apps" : [{
+      "name" : "BackEND",
+      "script"    : "BackEndServer",
+      "instances" : "1",
+      "exec_mode": "fork",
+      "interpreter": "python3"
+    },
+    {
+      "name" : "UI",
       "script"    : "./FrontEndServer/bin/www",
       "instances" : "max",
       "exec_mode" : "cluster" 

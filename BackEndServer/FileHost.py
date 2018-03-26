@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, make_response, redirect
 from pathlib import Path
-from __main__ import app
+from __main__ import app, get_data_path
 from io import BytesIO
 from PIL import Image
 import numpy as np
@@ -34,7 +34,6 @@ def list_dbs():
 @app.route('/<path:data_path>')
 def index(data_path):
 
-
     if '.h5' not in data_path:
 
         db_list = []
@@ -53,7 +52,7 @@ def index(data_path):
         return render_template('errors/404.html', msg='no DB with the name "' + db + '"')
 
     try:
-        file = h5py.File(db)[path]
+        file = h5py.File(db, 'r')[path]
     except:
         return render_template('errors/404.html', msg="there was an error i think it was just a 404 error")
 
@@ -74,19 +73,9 @@ def index(data_path):
 
         return render_template("list.html", url=link, list=[key for key in file.keys()])
 
-
-def get_data_path(path):
-    temp = path.split('.h5')
-
-    temp[0] = 'h5data/' + temp[0] + '.h5'
-
-    if len(temp) is not 2: 
-        temp[1] = '/'
-
-    if temp[1] is '':
-        temp[1] = '/'
-    return temp
-
+def reload_icons_db():
+    global thumbnail_db
+    thumbnail_db = h5py.File('thumbnail.h5', 'a')
 
 def get_mime_type(buffer, db = None):
 
@@ -115,10 +104,10 @@ def make_thumbnail(name, buffer):
 
 
 def get_thumnail(db_file, db, path):
-    global thumbnail_db
-
+    
     if not os.path.exists("thumbnails.h5"):
-        thumbnail_db = h5py.File('thumbnail.h5', 'a')
+        reload_icons_db()
+    
     thumbnail_path = db + '/' + path
 
     is_dataset = isinstance(db_file, h5py.Dataset)
