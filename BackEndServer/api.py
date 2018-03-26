@@ -1,4 +1,4 @@
-from __main__ import app, get_data_path
+from __main__ import app, get_data_path, get_mime_type
 
 import h5py
 
@@ -50,9 +50,14 @@ def db_api(data_path):
             file = h5py.File(db, 'r')[path]
         except:
             return error_404("there was an error i think it was just a 404 error")
+    
+    if isinstance(file, h5py.Dataset):
+        output = { "type" : "file"}
+    else:
+        output = { "type" : "folder", "data" : [key for key in file.keys()] }
 
 
-    return jsonify([key for key in file.keys()])
+    return jsonify(output)
 
 
 

@@ -1,9 +1,19 @@
 #!/usr/bin/python
 from flask import Flask
 from hdf5helper import FileHelper
-
+import magic
 
 app = Flask(__name__)
+
+magic_man = magic.Magic()
+
+def get_mime_type(buffer, db = None):
+
+    if db is None:
+        return magic_man.from_buffer(buffer)
+    else:
+        return db[buffer].attrs('mime')
+
 
 def get_data_path(path):
     temp = path.split('.h5')

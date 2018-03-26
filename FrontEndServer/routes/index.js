@@ -42,7 +42,13 @@ router.get('/db/:data_base?.h5*', function(req, res, next) {
       console.log('Status:', res.statusCode);
     } else {
       // data is already parsed as JSON:
-      res.render('list', {APIbaseURL : baseURL, db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, dbs : data});
+      if(data['type'] == "file")
+      {
+        res.render('file', {data : baseURL + '/' +  req.params['data_base'] + '.h5/' + req.params[0]});
+      }
+      else{
+      res.render('list', {APIbaseURL : baseURL, db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, data : data['data']});
+      }
       console.log(data);
     }
 });

@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, make_response, redirect
 from pathlib import Path
-from __main__ import app, get_data_path
+from __main__ import app, get_data_path, get_mime_type
 from io import BytesIO
 from PIL import Image
 import numpy as np
 import datetime
-import magic
 import h5py
 import glob
 import os
@@ -16,9 +15,6 @@ thumbnail_db = h5py.File('thumbnail.h5', 'a')
 
 icons_db = h5py.File('icons.h5', 'a')
 
-
-magic_man = magic.Magic()
-
 @app.route('/thumbnail/<path:data_path>')
 def thumbnail_route(data_path):
     temp = get_data_path(data_path)
@@ -27,9 +23,11 @@ def thumbnail_route(data_path):
     file = h5py.File(db)[path]
     return get_thumnail(file ,db, path)
 
+
 @app.route('/')
 def list_dbs():
     return index('')
+
 
 @app.route('/<path:data_path>')
 def index(data_path):
@@ -77,12 +75,6 @@ def reload_icons_db():
     global thumbnail_db
     thumbnail_db = h5py.File('thumbnail.h5', 'a')
 
-def get_mime_type(buffer, db = None):
-
-    if db is None:
-        return magic_man.from_buffer(buffer)
-    else:
-        return db[buffer].attrs('mime')
 
 
 def make_thumbnail(name, buffer):
