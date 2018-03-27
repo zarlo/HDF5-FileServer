@@ -1,0 +1,41 @@
+{% extends 'base.twig' %}
+
+{% block Content %}
+
+{% macro setting_Toggle(id, name, isTrue) %}
+
+<label class="checkbox-inline">
+<input id="{{id}}" type="checkbox"  {% if isTrue %} checked {% endif %} data-toggle="toggle"> {{name}}
+</label>
+
+<script>
+
+    $('#{{id}}').change(function() {
+        SendToggle('{{id}}', $(this).prop('checked'));
+    });
+
+</script>
+
+
+{% endmacro %}
+
+{% import _self as me %}
+
+{{ me.setting_Toggle('use-thumb', "Use Thumbnail's") }}
+
+<script>
+
+function SendToggle(id, data)
+{
+
+$.ajax({
+  method: "POST",
+  url: "settings",
+  data: { toggleID: id, isTrue: data }
+});
+
+}
+
+</script>
+
+{% endblock %}

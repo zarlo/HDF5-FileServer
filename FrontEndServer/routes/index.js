@@ -9,6 +9,20 @@ router.get('/', function(req, res, next) {
   res.render('index');
 });
 
+
+router.post('/settings', function(req, res, next) {
+
+  res.json({ "code" : "yay" });
+  
+});
+
+router.get('/settings', function(req, res, next) {
+
+  res.render('settings');
+  
+});
+
+
 router.get('/db/list', function(req, res, next) {
 
 
