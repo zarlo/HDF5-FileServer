@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router({ caseSensitive : true });
 var request = require('request');
 
-var baseURL = "http://127.0.0.1:5000"
+var baseURL = "http://130.56.35.179:5000"
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

@@ -78,7 +78,7 @@ def reload_icons_db():
 
 
 def make_thumbnail(name, buffer):
-    size = 160, 160
+    size = 300, 300
     im = Image.open(BytesIO(buffer))
     im.thumbnail(size, resample=Image.NEAREST)
 
