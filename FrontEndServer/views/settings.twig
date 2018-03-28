@@ -5,13 +5,13 @@
 {% macro setting_Toggle(id, name, isTrue) %}
 
 <label class="checkbox-inline">
-<input id="{{id}}" type="checkbox"  {% if isTrue %} checked {% endif %} data-toggle="toggle"> {{name}}
+<input id="{{id}}" type="checkbox"  {% if isTrue == "yes" %} checked {% endif %} data-toggle="toggle"> {{name}}
 </label>
 
 <script>
 
     $('#{{id}}').change(function() {
-        SendToggle('{{id}}', $(this).prop('checked'));
+        Send('{{id}}', $(this).prop('checked') ? 'yes' : 'no');
     });
 
 </script>
@@ -21,17 +21,17 @@
 
 {% import _self as me %}
 
-{{ me.setting_Toggle('use-thumb', "Use Thumbnail's") }}
+{{ me.setting_Toggle('use-thumb', "Use Thumbnail's", use_thumbnail) }}
 
 <script>
 
-function SendToggle(id, data)
+function Send(id, data)
 {
 
 $.ajax({
   method: "POST",
   url: "settings",
-  data: { toggleID: id, isTrue: data }
+  data: { id: id, value: data }
 });
 
 }

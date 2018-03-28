@@ -15,8 +15,6 @@ def error_404(data):
     return jsonify(d)
 
 
-
-
 @app.route('/api/')
 def api():
     db_list = []

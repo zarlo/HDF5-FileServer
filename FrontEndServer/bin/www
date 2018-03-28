@@ -25,7 +25,6 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen('mysocket.socket');
 server.listen(3000);
 
 server.on('error', onError);

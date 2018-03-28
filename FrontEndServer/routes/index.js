@@ -2,6 +2,12 @@ var express = require('express');
 var router = express.Router({ caseSensitive : true });
 var request = require('request');
 
+var Cache = require('cache-storage');
+var FileStorage = require('cache-storage/Storage/FileSyncStorage');
+ 
+var cache = new Cache(new FileStorage('cache-storage'));
+
+
 var baseURL = "http://130.56.35.179:5000"
 
 /* GET home page. */
@@ -12,13 +18,28 @@ router.get('/', function(req, res, next) {
 
 router.post('/settings', function(req, res, next) {
 
+  req.session[req.body.id] = req.body.value
+
   res.json({ "code" : "yay" });
+  
+});
+
+router.get('/session', function(req, res, next) {
+
+  res.json(req.session);
   
 });
 
 router.get('/settings', function(req, res, next) {
 
-  res.render('settings');
+  var use_thumbnail = "yes";
+  
+  if(req.session['use-thumb'])
+  {
+    use_thumbnail = req.session['use-thumb'];
+  }
+    
+  res.render('settings', {use_thumbnail, use_thumbnail});
   
 });
 
@@ -61,11 +82,21 @@ router.get('/db/:data_base?.h5*', function(req, res, next) {
         res.render('file', {data : baseURL + '/' +  req.params['data_base'] + '.h5/' + req.params[0]});
       }
       else{
-      res.render('list', {APIbaseURL : baseURL, db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, data : data['data']});
-      }
+
+        var workingURL = baseURL + "/thumbnail";
+
+        if(req.session['use-thumb'] == 'no') 
+        {
+          workingURL = baseURL;
+        }
+
+      res.render('list', {baseURL : workingURL, db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, data : data['data']});
+      
+    }
       console.log(data);
     }
 });
 });
+
 
 module.exports = router;

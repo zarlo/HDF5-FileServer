@@ -71,11 +71,10 @@ def index(data_path):
 
         return render_template("list.html", url=link, list=[key for key in file.keys()])
 
-def reload_icons_db():
+def reload_thumbnail_db():
     global thumbnail_db
+    thumbnail_db.close()
     thumbnail_db = h5py.File('thumbnail.h5', 'a')
-
-
 
 def make_thumbnail(name, buffer):
     size = 300, 300
@@ -98,7 +97,7 @@ def make_thumbnail(name, buffer):
 def get_thumnail(db_file, db, path):
     
     if not os.path.exists("thumbnails.h5"):
-        reload_icons_db()
+        reload_thumbnail_db()
     
     thumbnail_path = db + '/' + path
 
