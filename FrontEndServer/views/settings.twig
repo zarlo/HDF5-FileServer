@@ -2,9 +2,27 @@
 
 {% block Content %}
 
+{% macro setting_Text(id, name, data) %}
+
+<label class="">
+{{ name }} <input id="{{id}}" type="text" >{{ data }}</input>
+</label>
+
+<script>
+
+    $('#{{ id }}').change(function() {
+        Send('{{ id }}', $(this).value());
+    });
+
+</script>
+<br>
+
+{% endmacro %}
+
+
 {% macro setting_Toggle(id, name, isTrue) %}
 
-<label class="checkbox-inline">
+<label class="">
 <input id="{{id}}" type="checkbox"  {% if isTrue == "yes" %} checked {% endif %} data-toggle="toggle"> {{name}}
 </label>
 
@@ -15,13 +33,16 @@
     });
 
 </script>
-
+<br>
 
 {% endmacro %}
+
 
 {% import _self as me %}
 
 {{ me.setting_Toggle('use-thumb', "Use Thumbnail's", use_thumbnail) }}
+
+{{ me.setting_Toggle('auto-reload', "Auto reload on server restart", auto_reload) }}
 
 <script>
 

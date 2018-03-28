@@ -8,7 +8,7 @@ var FileStorage = require('cache-storage/Storage/FileSyncStorage');
 var cache = new Cache(new FileStorage('cache-storage'));
 
 
-var baseURL = "http://130.56.35.179:5000"
+var baseURL = "http://130.56.35.179:5000";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
 
 router.post('/settings', function(req, res, next) {
 
-  req.session[req.body.id] = req.body.value
+  req.session[req.body.id] = req.body.value;
 
   res.json({ "code" : "yay" });
   
@@ -39,7 +39,14 @@ router.get('/settings', function(req, res, next) {
     use_thumbnail = req.session['use-thumb'];
   }
     
-  res.render('settings', {use_thumbnail, use_thumbnail});
+  var auto_reload = "yes";
+  
+  if(req.session['auto-reload'])
+  {
+    auto_reload = req.session['auto-reload'];
+  }
+
+  res.render('settings', {use_thumbnail, auto_reload});
   
 });
 
@@ -62,6 +69,7 @@ router.get('/db/list', function(req, res, next) {
       console.log(data);
     }
 });
+
 });
 
 router.get('/db/:data_base?.h5*', function(req, res, next) {
