@@ -1,9 +1,7 @@
 //Page Loaded
 $(function(){
 
-    $('img').each(function(){
-        images.imagesdata.push($(this));
-    });
+    images.reload();
 
     $(window).scroll(function(){
         images.ScrollUpdate()
@@ -14,6 +12,14 @@ $(function(){
 
 var images = {
     
+    reload: function(){
+
+    $('img').each(function(){
+        images.imagesdata.push($(this));
+    });
+
+    },
+
     ScrollUpdate: function(){
 
         try { 
@@ -49,17 +55,11 @@ var images = {
 
     loadImage:  function(el, fn) {
 
-        if(el.attr('data-src') == 'done')
-        {
-        return;
-        }
         el.attr("src", el.attr('data-src'));
-        el.attr('data-src', 'done');
         
         el.on("load",function(){fn();});
         
     },
-
 
     imagesdata : Array(),
 
