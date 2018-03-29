@@ -2,55 +2,72 @@
 $(function(){
 
     $('img').each(function(){
-        images.push($(this));
+        images.imagesdata.push($(this));
     });
 
     $(window).scroll(function(){
-         ScrollUpdate()
+        images.ScrollUpdate()
     });
-    ScrollUpdate();
+    images.ScrollUpdate();
 
 });
 
-var images = new Array()
-
-function ScrollUpdate()
-{
-try { 
-
-    images.filter(img => elementInViewport(img)).forEach(element => {
-        loadImage(element, function(){
-            console.log("Image loaded");
-        });
-    });
-    images = images.filter((img) => !elementInViewport(img))
-
-} catch (error) {
- console.log(error);   
-}
-
-}
-
-function elementInViewport(el) {
-
-    var top_of_element = el.offset().top;
-    var bottom_of_element = el.offset().top + el.outerHeight();
-    var bottom_of_screen = $(window).scrollTop() + window.innerHeight;
-    var top_of_screen = $(window).scrollTop();
-    if((bottom_of_screen > top_of_element) && (top_of_screen < bottom_of_element)){
-        return true;
-    }
-    else {
-        return false;
-    }
-
-}
-
-function loadImage (el, fn) {
+var images = {
     
+    ScrollUpdate: function(){
 
-    el.attr("src", el.attr('data-src'));
-    el.on("load",function(){fn();});
-    	
+        try { 
+
+            images.imagesdata.filter(img => images.elementInViewport(img)).forEach(element => {
+                images.loadImage(element, function(){
+                    console.log("Image loaded");
+                });
+            });
+            images.imagesdata = images.imagesdata.filter((img) => !images.elementInViewport(img))
+        
+        } catch (error) {
+         console.log(error);   
+        }
+        
+
+    },
+
+    elementInViewport: function(el) {
+
+        var top_of_element = el.offset().top;
+        var bottom_of_element = el.offset().top + el.outerHeight();
+        var bottom_of_screen = $(window).scrollTop() + window.innerHeight;
+        var top_of_screen = $(window).scrollTop();
+        if((bottom_of_screen > top_of_element) && (top_of_screen < bottom_of_element)){
+            return true;
+        }
+        else {
+            return false;
+        }
     
-}
+    },
+
+    loadImage:  function(el, fn) {
+
+        if(el.attr('data-src') == 'done')
+        {
+        return;
+        }
+        el.attr("src", el.attr('data-src'));
+        el.attr('data-src', 'done');
+        
+        el.on("load",function(){fn();});
+        
+    },
+
+
+    imagesdata : Array(),
+
+};
+
+
+
+
+
+
+
