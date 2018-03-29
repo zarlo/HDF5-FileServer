@@ -98,7 +98,14 @@ router.get('/db/:data_base?.h5*', function(req, res, next) {
           workingURL = baseURL;
         }
 
-      res.render('list', {baseURL : workingURL, db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, data : data['data']});
+      res.render('list', {
+      
+        baseURL : workingURL, 
+        db : req.params['data_base'] + '.h5/' + req.params[0] ,  url : req.url, 
+        data : data['data']
+        
+        
+      });
       
     }
       console.log(data);

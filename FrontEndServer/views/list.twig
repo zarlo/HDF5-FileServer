@@ -3,12 +3,12 @@
 {% block Content %}
 
 <a href="javascript:;" onclick="window.history.back()">Back</a>
-<div>
+<div id="data">
 {% for item in data %}
     
-    <div style="width: 30vh; height: 30vh; float:left;">
-       <a  href="{{ url }}/{{item}}"><p style="width: 30vh;"> {{ item }}</p>
-    <img src="{{baseURL}}/{{db}}/{{item}}?thumbnail" style="width: 25vh; height: 25vh;">
+    <div style="width: 25vh; height: 25vh; float:left;">
+       <a  href="{{ url }}/{{item}}"><p style="width: 25vh;"> {{ item }}</p>
+    <img data-src="{{baseURL}}/{{db}}/{{item}}" style="width: 20vh; height: 20vh;">
 </a>
 </div>
 
