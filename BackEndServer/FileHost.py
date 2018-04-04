@@ -20,8 +20,8 @@ def thumbnail_route(data_path):
     temp = get_data_path(data_path)
     db = temp[0]
     path = temp[1]
-    file = h5py.File(db)[path]
-    return get_thumnail(file ,db, path)
+    
+    return get_thumnail(db, path)
 
 
 @app.route('/')
@@ -94,8 +94,10 @@ def make_thumbnail(name, buffer):
     temp[0] = np.fromstring(imgByteArr, dtype='uint8')
 
 
-def get_thumnail(db_file, db, path):
+def get_thumnail(db, path):
     
+    db_file = h5py.File(db)[path]
+
     if not os.path.exists("thumbnails.h5"):
         reload_thumbnail_db()
     

@@ -6,11 +6,17 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "cache-storage": "^2.0.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "decode-html": "^2.0.0",
     "express": "~4.16.0",
+    "express-session": "^1.15.6",
+    "html-escape": "^2.0.0",
     "http-errors": "~1.6.2",
-    "twig": "1.10.5",
-    "morgan": "~1.9.0"
+    "morgan": "~1.9.0",
+    "request": "^2.85.0",
+    "session-file-store": "^1.2.0",
+    "twig": "1.10.5"
   }
 }

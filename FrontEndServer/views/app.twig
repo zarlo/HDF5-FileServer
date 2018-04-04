@@ -1,0 +1,16 @@
+{% extends 'base.twig' %}
+
+{% block Content %}
+
+
+
+<div id="App">
+
+</div>
+
+<script src="/js/app.js"></script>
+<script>
+app.Init({"apiURL": "{{ baseURL }}", "WorkingPath": "{{ workingPath }}", "useThumbnails": "{{ useThumbnails }}", 'TTL': '0'});
+</script>
+
+{% endblock %}
