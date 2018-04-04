@@ -264,7 +264,7 @@ cache : {
             if(temp)
             {
 
-                var TTLdif = new Date().getTime() > temp.TTL;
+                var TTLdif = new Date().getTime() < temp.TTL;
                 console.log(TTLdif);
                 if(TTLdif < (app.settings.TTL * 60000))
                 {
