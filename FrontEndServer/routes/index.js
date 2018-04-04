@@ -2,10 +2,6 @@ var express = require('express');
 var router = express.Router({ caseSensitive : true });
 var request = require('request');
 
-var Cache = require('cache-storage');
-var FileStorage = require('cache-storage/Storage/FileSyncStorage');
- 
-var Filecache = new Cache(new FileStorage('cache-storage'));
 
 var decode = require('decode-html');
 
