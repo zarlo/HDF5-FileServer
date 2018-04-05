@@ -1,3 +1,4 @@
+
 //Page Loaded
 $(function(){
 
@@ -9,6 +10,8 @@ $(function(){
 });
 
 var app = {
+
+BackGroundWorker : undefined,
 
 settings: {
 
@@ -24,7 +27,7 @@ settings: {
 
 Init: function(settings){
     
-    settings.apiURL = settings.apiURL || $(location).attr('host') + ':5000/';
+    settings.apiURL = settings.apiURL || $(location).attr('host') + '/proxy';
 
     settings.BaseURL = settings.BaseURL || '//' + $(location).attr('host') + '/db/';  
 
@@ -51,6 +54,7 @@ Init: function(settings){
     if (localStorage)
     {
         console.log("localStorage is on");
+
         console.log(localStorage);
     }
     else
@@ -71,12 +75,44 @@ ui: {
 
     Init: function(callback)
     {
+
         console.log('Making UI');
         console.log('App Div is ' + app.settings.PageDIV);
         var BaseDIV = $('#' + app.settings.PageDIV);
-        BaseDIV.append("<a herf='javascript:;' onclick='app.page.GoBack();'><button type='button' class='btn'>Go Back</button></a>");
+        BaseDIV.append("<div id='" + app.settings.PageDIV + "-Controls'>");
+        var UI_DIV = $('#' + app.settings.PageDIV + "-Controls");
+        this.AddButton(UI_DIV, "Go Back", "app.page.GoBack();");
+        this.AddButton(UI_DIV, "Reload", "app.page.RefreshPage();");
+
+
+        BaseDIV.append('<div data-backdrop="static" class="modal" id="' + app.settings.PageDIV + '-loading" tabindex="-1" role="dialog">'+
+        '<div class="modal-dialog modal-dialog-centered" role="document">'+
+        '<div class="modal-content">'+
+        '<p id="' + app.settings.PageDIV + '-loading-msg"></p>'+
+        '</div>'+
+        '</div>'+
+        '</div>');
+
         BaseDIV.append("<div id='" + app.settings.PageDIV + "-Data'>");
         callback();
+
+    },
+
+    AddButton: function(parent, name, onClick, cooldown, style)
+    {
+        parent.append("<button type='button' style='" + style + "' class='btn' onclick='" + onClick + ";'>" + name + "</button>");
+    },
+
+    AddCoolDownButton: function(parent, name, onClick, cooldown, style)
+    {
+        parent.append("<button type='button' style='" + style + "' class='btn' onclick='app.ui.ButtonCoolDown('" + name + "', function(){" + onClick + ";});'>" + name + "</button>");
+    },
+
+    ButtonCoolDown: function(id, time, fn)
+    {
+
+
+        fn();
 
     },
 
@@ -92,12 +128,27 @@ ui: {
         }
 
 
-        $( "#" + app.settings.PageDIV + "-Data" ).append("<div id='photos' style='width: " + app.settings.ImageSize + "vh; height: " + app.settings.ImageSize + "vh; float:left;'><a href='javascript:;' onclick='app.page.LoadPage(\"" + app.settings.WorkingPath + "/" + name + "\");'><p style='width: " + app.settings.ImageSize + "vh;'>" + name + "</p><img data-src='" + FileURL + "' style='width: " + (app.settings.ImageSize - 5) + "vh; height: " + (app.settings.ImageSize - 5) + "vh;'>");
+        $( "#" + app.settings.PageDIV + "-Data" ).append("<div id='photos' style='width: " + app.settings.ImageSize + "vh; height: " + app.settings.ImageSize + "vh; float:left;'><a href='" + app.settings.BaseURL + app.settings.WorkingPath + "/" + name + "' onclick='return app.page.LoadPage(\"" + app.settings.WorkingPath + "/" + name + "\");'><p style='width: " + app.settings.ImageSize + "vh;'>" + name + "</p><img data-src='" + FileURL + "' style='width: " + (app.settings.ImageSize - 5) + "vh; height: " + (app.settings.ImageSize - 5) + "vh;'>");
 
-    },
-    
-    LoadingPage: function()
+    },  
+
+
+    LoadingPage: function(status, msg)
     {
+
+        if(status === "done")
+        {
+            $("#" + app.settings.PageDIV + "-loading").modal('hide');
+        }
+        else
+        {
+            $("#" + app.settings.PageDIV + "-loading").modal('show');
+        }
+
+        if(msg)
+        {
+            $("#" + app.settings.PageDIV + "-loading-msg").text(msg);
+        }
 
     },
 
@@ -109,7 +160,7 @@ ui: {
             $('img').each(function(){
                 app.ui.images.imagesdata.push($(this));
             });
-    
+            
         },
     
         ScrollUpdate: function(){
@@ -182,7 +233,7 @@ page: {
     },
 
     ReloadPage: function(){
-
+        app.ui.LoadingPage("loading", "loading page data");
         console.log("Page Type:" + this.PageData.type);
 
         if(this.PageData.type === "file")
@@ -205,11 +256,19 @@ page: {
 
         app.ui.images.reload();
         app.ui.images.ScrollUpdate();
+        app.ui.LoadingPage("done");
 
     },
 
+    RefreshPage: function()
+    {
+        this.LoadPage(app.settings.WorkingPath);
+    },
+
+    //just load the data for the page DO NOT EDIT THE UI HERE
     LoadPage: function(page){
-        app.settings.WorkingPath = page;
+        app.settings.WorkingPath = page.replace("\/\/", "/");
+        app.ui.LoadingPage("loading", "getting page data");
         console.log(app.settings.WorkingPath);
         if (history.pushState) {
         window.history.pushState("","H5 FILES", app.settings.BaseURL + page);
@@ -234,8 +293,14 @@ page: {
         }
         else
         {
+            var URL = "/proxy/" + encodeURI(app.settings.apiURL + "/api/" + page);
+            
+            if(page === "/list")
+            {
+                URL = "/proxy/" + encodeURI(app.settings.apiURL + "/api/");
+            }
 
-            $.getJSON("/proxy/" + encodeURI(app.settings.apiURL + "/api/" + page), function(data) {
+            $.getJSON(URL, function(data) {
         
                 console.log("Loading Page Data");
         
@@ -244,7 +309,10 @@ page: {
                 app.page.ReloadPage();
 
             });
+
         }
+        // this must return false 
+        return false;
     },
 
 
@@ -257,22 +325,31 @@ cache : {
 
     getData: function(key)
     {
+        key = key.replace(/\/$/, "");
         if(localStorage){
             console.log("getting " + key + " from localStorage");
-            var temp = localStorage[key];
             
-            if(temp)
+            if(localStorage[key])
             {
-
-                var TTLdif = new Date().getTime() > temp.TTL;
-                console.log(TTLdif);
-                if(TTLdif < (app.settings.TTL * 60000))
-                {
-                return JSON.parse(JSON.parse(localStorage[key]).data);
+                try {
+                    var temp = JSON.parse(localStorage[key]);
+                    console.log(new Date().getTime());
+                    console.log(temp.TTL);
+                    var TTLdif = Math.floor((new Date().getTime() - temp.TTL)/1000);
+                    console.log(TTLdif + ":" + app.settings.TTL);
+                    if(TTLdif < app.settings.TTL)
+                    {
+                    return JSON.parse(temp.data);
+                    }
+                    localStorage.removeItem(key);
+                    console.log(key + " out of date");
+                    return false;    
+                } catch (error) {
+                    localStorage.removeItem(key);
+                    console.log(key + " FAILED :(");
+                    return false;
                 }
-                //localStorage.removeItem(key);
-                console.log(key + " out of date");
-                return false;
+                
             }
             console.log(key + " not in localStorage");
             return false;
@@ -284,6 +361,7 @@ cache : {
 
     setData: function(key, value)
     {
+        key = key.replace(/\/$/, "");
         if(localStorage)
         {
 
@@ -292,6 +370,15 @@ cache : {
         }
         console.log("whats localStorage???");
         return false;
+    },
+
+    removeOld: function(){
+        if(localStorage){
+            for (i = 0; localStorage.length > i; i++){
+                app.cache.getData(localStorage.key(i))
+            }
+        }
+
     },
 
     addTTL: function(minutes) {

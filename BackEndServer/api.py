@@ -27,7 +27,8 @@ def api():
         for filename in files:
             db_list.append(root.split('h5data/', 1)[1] + '/' + filename)
     print(db_list)
-    return json.dumps(db_list)
+    d = {"data": db_list, "type": "db"}
+    return json.dumps(d)
 
 @app.route('/api/<string:data_path>/')
 @app.route('/api/<string:data_path>')
@@ -55,7 +56,7 @@ def db_api(data_path):
             return error_404("there was an error i think it was just a 404 error")
     
     if isinstance(file, h5py.Dataset):
-        output = { "type" : "file"}
+        output = { "type" : "file", "mime": get_mime_type(file[0].tobytes())}
     else:
         output = { "type" : "folder", "data" : [key for key in file.keys()] }
 

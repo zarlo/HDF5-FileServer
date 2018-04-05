@@ -10,7 +10,9 @@
 
 <script src="/js/app.js"></script>
 <script>
-app.Init({"apiURL": "{{ baseURL }}", "WorkingPath": "{{ workingPath }}", "useThumbnails": "{{ useThumbnails }}", 'TTL': '0'});
+$(function(){
+app.Init({"apiURL": "{{ baseURL }}", "WorkingPath": "{{ workingPath }}", "useThumbnails": "{{ useThumbnails }}", 'TTL': '300'});
+});
 </script>
 
 {% endblock %}
